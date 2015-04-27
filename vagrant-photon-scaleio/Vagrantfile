@@ -1,0 +1,52 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = "vmware/photon"
+
+  (1..3).each do |i|
+    config.vm.define "flash-#{i}" do |node|
+      
+      # Define Resources for each VM
+      node.vm.provider "vmware_fusion" do |vm|
+        vm.vmx["memsize"] = "2048"
+        vm.vmx["numvcpus"] = "2"
+        vm.vmx["cpuid.coresPerSocket"] = "1"
+
+        # Change the path if you have external SSD that are faster
+        dir = "#{ENV['PWD']}/.vagrant/additional-disks"
+        vdiskmanager = '/Applications/VMware\ Fusion.app/Contents/Library/vmware-vdiskmanager'
+
+        unless File.directory?( dir )
+          Dir.mkdir dir
+        end
+
+        # Disk /dev/sdb
+        file_to_disk = "#{dir}/flash-#{i}-sdb.vmdk"
+        unless File.exists?( file_to_disk )
+          `#{vdiskmanager} -c -s 20GB -a lsilogic -t 1 #{file_to_disk}`
+        end
+
+        vm.vmx['scsi0:1.filename'] = file_to_disk
+        vm.vmx['scsi0:1.present']  = 'TRUE'
+        vm.vmx['scsi0:1.redo']     = ''
+
+        # Disk /dev/sdc
+        file_to_disk = "#{dir}/flash-#{i}-sdc.vmdk"
+        unless File.exists?( file_to_disk )
+          `#{vdiskmanager} -c -s 20GB -a lsilogic -t 1 #{file_to_disk}`
+        end
+
+        vm.vmx['scsi0:2.filename'] = file_to_disk
+        vm.vmx['scsi0:2.present']  = 'TRUE'
+        vm.vmx['scsi0:2.redo']     = ''
+      
+        # Configure IP of each node
+        # auto_config set to false due driver's buggy network implementation
+	# This private interface is being configure through scripts/provision-X.sh
+        node.vm.network :private_network, :device => "eth1", ip: "172.16.33.1#{i}", auto_config: false
+
+        # Provision as per node number
+        node.vm.provision :shell, :path => "scripts/provision-#{i}.sh"
+
+      end
+    end
+  end
+end
