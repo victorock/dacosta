@@ -3,14 +3,14 @@ keystone service­-create --­­name cinder --­­type volume --­­description 
 
 
 keystone endpoint-­create --­­service-­id \
-$(keystoneservice­list|awk'/volume/{print$2}') \
+$(keystone service-­list | awk '/volume/ { print $2 }') \
 --­­public-url http://Controller:8776/v1/%\(tenant_id\)s \
 --­­internal-url http://Controller:8776/v1/%\(tenant_id\)s \ ­­
 --admin-url http://Controller:8776/v1/%\(tenant_id\)s \
 --­­region regionOne
 
 keystone endpoint-­create --­­service-­id \
-$(keystoneservice­list|awk'/volume/{print$2}') \
+$(keystone service-­list | awk '/volume/ { print $2 }') \
 --­­public-url http://Controller:8776/v2/%\(tenant_id\)s \
 --­­internal-url http://Controller:8776/v2/%\(tenant_id\)s \ ­­
 --admin-url http://Controller:8776/v2/%\(tenant_id\)s \
