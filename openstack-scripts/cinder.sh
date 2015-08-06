@@ -1,24 +1,24 @@
-keystone service­-create --­­name cinder --­­type volume --­­description "OpenStack Block Storage"
-​keystone service­-create --­­name cinderv2 --­­type volumev2 ­­description "OpenStack Block Storage"
+keystone service�-create --�name cinder --type volume --description "OpenStack Block Storage"
+keystone service�-create --�name cinderv2 --type volumev2 --description "OpenStack Block Storage"
 
 
-keystone endpoint-­create --­­service-­id \
-$(keystone service-­list | awk '/volume/ { print $2 }') \
---­­public-url http://Controller:8776/v1/%\(tenant_id\)s \
---­­internal-url http://Controller:8776/v1/%\(tenant_id\)s \ ­­
+keystone endpoint-create --service-id \
+$(keystone service-list | awk '/volume/ { print $2 }') \
+--public-url http://Controller:8776/v1/%\(tenant_id\)s \
+--internal-url http://Controller:8776/v1/%\(tenant_id\)s \
 --admin-url http://Controller:8776/v1/%\(tenant_id\)s \
---­­region regionOne
+--region regionOne
 
-keystone endpoint-­create --­­service-­id \
-$(keystone service-­list | awk '/volume/ { print $2 }') \
---­­public-url http://Controller:8776/v2/%\(tenant_id\)s \
---­­internal-url http://Controller:8776/v2/%\(tenant_id\)s \ ­­
+keystone endpoint-create --service-id \
+$(keystone service-list | awk '/volume/ { print $2 }') \
+--public-url http://Controller:8776/v2/%\(tenant_id\)s \
+--internal-url http://Controller:8776/v2/%\(tenant_id\)s \
 --admin-url http://Controller:8776/v2/%\(tenant_id\)s \
---­­region regionOne
+--region regionOne
 
 
-apt-­get install cinder-­api \
-cinder-­scheduler python-­cinderclient ­-y
+apt-get install cinder-api \
+cinder-scheduler python-cinderclient -y
 
 crudini --set /etc/cinder/cinder.conf database connection mysql://cinder:roipass@Controller/cinder
 crudini --set /etc/cinder/cinder.conf DEFAULT rpc_backend rabbit
@@ -40,9 +40,8 @@ crudini --delete /etc/cinder/cinder.conf ​​​auth_port
 crudini --delete /etc/cinder/cinder.conf ​auth_protocol​
 
 
-su ­-s /bin/sh -­c "cinder­manage db sync" cinder
+su -s /bin/sh -c "cindermanage db sync" cinder
 rm -f /var/lib/cinder/cinder.sqlite
 
-
-service cinder­-scheduler restart
-service cinder­-api restart
+service cinder-scheduler restart
+service cinder-api restart
