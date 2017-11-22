@@ -1,5 +1,5 @@
-keystone service�-create --�name cinder --type volume --description "OpenStack Block Storage"
-keystone service�-create --�name cinderv2 --type volumev2 --description "OpenStack Block Storage"
+keystone service-create --�name cinder --type volume --description "OpenStack Block Storage"
+keystone service-create --�name cinderv2 --type volumev2 --description "OpenStack Block Storage"
 
 
 keystone endpoint-create --service-id \
@@ -35,9 +35,9 @@ crudini --set /etc/cinder/cinder.conf keystone_authtoken admin_tenant_name servi
 crudini --set /etc/cinder/cinder.conf keystone_authtoken admin_user cinder
 crudini --set /etc/cinder/cinder.conf keystone_authtoken admin_password roipass
 
-crudini --delete /etc/cinder/cinder.conf ​auth_host
-crudini --delete /etc/cinder/cinder.conf ​​​auth_port
-crudini --delete /etc/cinder/cinder.conf ​auth_protocol​
+crudini --del /etc/cinder/cinder.conf ​auth_host
+crudini --del /etc/cinder/cinder.conf ​​​auth_port
+crudini --del /etc/cinder/cinder.conf ​auth_protocol​
 
 
 su -s /bin/sh -c "cindermanage db sync" cinder

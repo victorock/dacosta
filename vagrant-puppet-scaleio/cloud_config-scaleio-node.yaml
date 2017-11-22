@@ -1,0 +1,42 @@
+#cloud-config
+hostname: node01.scaleio.local
+fqdn: node01.scaleio.local
+manage_etc_hosts: true
+mounts:
+ - [ "master.scaleio.local:/mnt/scaleio", "/mnt/scaleio", "nfs", "ro", "0", "0" ]
+
+yum_repos:
+    # The name of the repository
+    scaleio-master:
+        # Any repository configuration options
+        # See: man yum.conf
+        #
+        # This one is required!
+        baseurl: file:///mnt/scaleio
+        enabled: false
+        failovermethod: priority
+        gpgcheck: no
+        name: Scaleio Packages from Foreman
+
+    docker-repo:
+        name: Docker Repository
+        baseurl: https://yum.dockerproject.org/repo/main/centos/7
+        enabled: true
+        gpgcheck: true
+        gpgkey: https://yum.dockerproject.org/gpg
+
+package_upgrade: true
+
+packages:
+ - http://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-7-11.noarch.rpm
+ - puppet
+ - docker-engine
+ - nfs-utils
+
+puppet:
+  conf:
+    agent:
+      server: "master.scaleio.local"
+      splay: true
+      splaylimit: 120
+      runinterval: 120
